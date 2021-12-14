@@ -13,6 +13,7 @@ export async function getOrCreate<T extends { id: string }>(
   if (e == null) {
     e = new entityConstructor();
     e.id = id;
+    //console.log(`Created ${entityConstructor}`)
   }
 
   return e;

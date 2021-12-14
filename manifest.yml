@@ -20,6 +20,15 @@ typegen:
     - assets.AssetFrozen
     - assets.AssetThawed
     - assets.Destroyed
+    - uniques.Created
+    - uniques.Issued
+    - uniques.Destroyed
+    - uniques.Transferred
+    - uniques.Burned
+    - uniques.Frozen
+    - uniques.Thawed
+    - uniques.ClassFrozen
+    - uniques.ClassThawed
 
 mappings:
   mappingsModule: lib/mappings
@@ -56,6 +65,25 @@ mappings:
       handler: assetBalanceBurned
     - event: assets.Thawed
       handler: assetBalanceThawed
+    - event: uniques.Created
+      handler: uniqueClassCreated
+    - event: uniques.Issued
+      handler: uniqueInstanceIssued
+    - event: uniques.Destroyed
+      handler: uniqueClassDestroyed
+    - event: uniques.Transferred
+      handler: uniqueInstanceTransferred
+    - event: uniques.Burned
+      handler: uniqueInstanceBurned
+    - event: uniques.Frozen
+      handler: uniqueInstanceFrozen
+    - event: uniques.Thawed
+      handler: uniqueInstanceThawed
+    - event: uniques.ClassFrozen
+      handler: uniqueClassFrozen
+    - event: uniques.ClassThawed
+      handler: uniqueClassThawed
+
   extrinsicHandlers:
   preBlockHooks:
   postBlockHooks:

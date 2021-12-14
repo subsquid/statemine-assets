@@ -15,7 +15,7 @@ export class AssetBalance {
 
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})
-  wallet!: Account
+  account!: Account
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   balance!: bigint

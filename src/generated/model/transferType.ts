@@ -5,4 +5,6 @@ export enum TransferType {
   BURN = "BURN",
   FREEZE = "FREEZE",
   THAWED = "THAWED",
+  CREATED = "CREATED",
+  DESTROYED = "DESTROYED",
 }

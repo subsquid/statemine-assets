@@ -1,3 +1,4 @@
+import { AccountId32 } from "@polkadot/types/interfaces";
 import {
   DatabaseManager,
   EventContext,
@@ -43,13 +44,14 @@ export async function getAssetById(
 export async function getAssetAccountDetails(
   store: DatabaseManager,
   asset: Asset | string,
-  wallet: string
+  wallet: AccountId32
 ): Promise<[Asset, Account, AssetBalance]> {
   if (typeof asset == "string") {
     asset = await getAssetById(asset, store);
   }
-  const id = getAssetBalanceId(asset.id, wallet);
-  const getOwnerAccount = getOrCreate(store, Account, wallet);
+  const accountId = wallet.toHex();
+  const id = getAssetBalanceId(asset.id, accountId);
+  const getOwnerAccount = getOrCreate(store, Account, accountId);
   const getOwnerAssetBalance = getOrCreate(store, AssetBalance, id);
   const [account, assetBalance] = await Promise.all([
     getOwnerAccount,
@@ -57,7 +59,7 @@ export async function getAssetAccountDetails(
   ]);
 
   if (!account.wallet) {
-    account.wallet = wallet;
+    account.wallet = wallet.toHuman();
     account.balance = account.balance || 0n;
     await store.save(account);
   }
@@ -78,7 +80,7 @@ export async function getAssetAccountDetails(
 export async function changeAssetBalance(
   store: DatabaseManager,
   assetId: Asset | string,
-  wallet: string,
+  wallet: AccountId32,
   amount: bigint
 ): Promise<[Asset, Account, AssetBalance]> {
   const [asset, account, assetBalance] = await getAssetAccountDetails(
@@ -89,7 +91,7 @@ export async function changeAssetBalance(
 
   assetBalance.asset = asset;
   assetBalance.balance = assetBalance.balance || 0n + amount;
-  assetBalance.wallet = account;
+  assetBalance.account = account;
   await store.save(assetBalance);
   return [asset, account, assetBalance];
 }
@@ -212,7 +214,7 @@ export async function assetIssued({
   const [asset] = await changeAssetBalance(
     store,
     assetId.toString(),
-    owner.toString(),
+    owner,
     issued.toBigInt()
   );
   asset.totalSupply = asset.totalSupply || 0n + issued.toBigInt();
@@ -243,11 +245,11 @@ export async function assetTransfer({
   const [asset] = await changeAssetBalance(
     store,
     assetId.toString(),
-    from.toString(),
+    from,
     -amount.toBigInt() // decrements from sender account
   );
 
-  await changeAssetBalance(store, asset, to.toString(), amount.toBigInt());
+  await changeAssetBalance(store, asset, to, amount.toBigInt());
 
   const transfer = new Transfer();
   transfer.amount = amount.toBigInt();
@@ -274,7 +276,7 @@ export async function assetBalanceBurned({
   const [asset] = await changeAssetBalance(
     store,
     assetId.toString(),
-    from.toString(),
+    from,
     -amount.toBigInt() // decrements from account
   );
 
@@ -303,11 +305,11 @@ export async function assetTransferredApproved({
   const [asset] = await changeAssetBalance(
     store,
     assetId.toString(),
-    from.toString(),
+    from,
     -amount.toBigInt() // decrements from sender account
   );
 
-  await changeAssetBalance(store, asset, to.toString(), amount.toBigInt());
+  await changeAssetBalance(store, asset, to, amount.toBigInt());
 
   const transfer = new Transfer();
   transfer.amount = amount.toBigInt();
@@ -335,7 +337,7 @@ export async function assetAccountFrozen({
   const [asset, , assetBalance] = await getAssetAccountDetails(
     store,
     assetId.toString(),
-    who.toString()
+    who
   );
   assetBalance.status = AssetStatus.FREEZED;
   await store.save(assetBalance);
@@ -364,7 +366,7 @@ export async function assetBalanceThawed({
   const [asset, , assetBalance] = await getAssetAccountDetails(
     store,
     assetId.toString(),
-    who.toString()
+    who
   );
   assetBalance.status = AssetStatus.ACTIVE;
   await store.save(assetBalance);

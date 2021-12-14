@@ -11,6 +11,8 @@ enum TransferType {
   BURN
   FREEZE
   THAWED
+  CREATED
+  DESTROYED
 }
 
 type Asset @entity {
@@ -32,7 +34,7 @@ type Asset @entity {
 
 type AssetBalance @entity {
   id: ID! #AccountId-AssetId
-  wallet: Account!
+  account: Account!
   balance: BigInt!
   status: AssetStatus!
   asset: Asset!
@@ -42,8 +44,10 @@ type Account @entity {
   id: ID! #Account address
   wallet: String! @unique
   balance: BigInt! #Native KSM balance
-  assets: [AssetBalance!] @derivedFrom(field: "wallet")
+  assets: [AssetBalance!] @derivedFrom(field: "account")
+  uniqueInstances: [UniqueInstance!] @derivedFrom(field: "owner")
   historicalBalances: [HistoricalBalance!] @derivedFrom(field: "account")
+  
 }
 
 type HistoricalBalance @entity {
@@ -53,9 +57,23 @@ type HistoricalBalance @entity {
   timestamp: DateTime!
 }
 
-type Transfer @entity {
+interface TransferBase {
   id: ID! #event id
-  amount: BigInt!
+  to: String
+  from: String
+  delegator: String
+  fee: BigInt
+  type: TransferType!
+  extrinisicId: String
+  success: Boolean!
+  createdAt: DateTime!
+  blockHash: String!
+  blockNum: Int!
+}
+
+type Transfer implements TransferBase @entity {
+  id: ID! #event id
+  amount: BigInt
   to: String
   from: String
   delegator: String # Delegator address for transfer by delegator
@@ -68,3 +86,43 @@ type Transfer @entity {
   blockHash: String!
   blockNum: Int!
 }
+
+type UniqueTransfer implements TransferBase @entity {
+  id: ID! #event id
+  to: String
+  from: String
+  delegator: String # Delegator address for transfer by delegator
+  fee: BigInt
+  uniqueClass: UniqueClass
+  uniqueInstance: UniqueInstance
+  type: TransferType!
+  extrinisicId: String
+  success: Boolean!
+  createdAt: DateTime!
+  blockHash: String!
+  blockNum: Int!
+}
+
+type UniqueClass @entity {
+  id: ID!
+  owner: String
+  admin: String
+  issuer: String
+  creator: String
+  freezer: String
+  totalDeposit: BigInt
+  name: String 
+  status: AssetStatus!
+  instances: [UniqueInstance!] @derivedFrom(field: "uniqueClass")
+}
+
+type UniqueInstance @entity {
+  id: ID!
+  innerID: String!
+  uniqueClass: UniqueClass!
+  owner: Account!
+  status: AssetStatus!
+  deposit: BigInt
+  transfers: [UniqueTransfer!] @derivedFrom(field: "uniqueInstance")
+}
+

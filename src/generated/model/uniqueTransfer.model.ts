@@ -1,19 +1,17 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
 import * as marshal from "../marshal"
-import {Asset} from "./asset.model"
+import {UniqueClass} from "./uniqueClass.model"
+import {UniqueInstance} from "./uniqueInstance.model"
 import {TransferType} from "./transferType"
 
 @Entity_()
-export class Transfer {
-  constructor(props?: Partial<Transfer>) {
+export class UniqueTransfer {
+  constructor(props?: Partial<UniqueTransfer>) {
     Object.assign(this, props)
   }
 
   @PrimaryColumn_()
   id!: string
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  amount!: bigint | undefined | null
 
   @Column_("text", {nullable: true})
   to!: string | undefined | null
@@ -28,8 +26,12 @@ export class Transfer {
   fee!: bigint | undefined | null
 
   @Index_()
-  @ManyToOne_(() => Asset, {nullable: true})
-  asset!: Asset | undefined | null
+  @ManyToOne_(() => UniqueClass, {nullable: true})
+  uniqueClass!: UniqueClass | undefined | null
+
+  @Index_()
+  @ManyToOne_(() => UniqueInstance, {nullable: true})
+  uniqueInstance!: UniqueInstance | undefined | null
 
   @Column_("varchar", {length: 9, nullable: false})
   type!: TransferType
