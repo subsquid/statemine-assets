@@ -47,7 +47,6 @@ type Account @entity {
   assets: [AssetBalance!] @derivedFrom(field: "account")
   uniqueInstances: [UniqueInstance!] @derivedFrom(field: "owner")
   historicalBalances: [HistoricalBalance!] @derivedFrom(field: "account")
-  
 }
 
 type HistoricalBalance @entity {
@@ -101,6 +100,7 @@ type UniqueTransfer implements TransferBase @entity {
   createdAt: DateTime!
   blockHash: String!
   blockNum: Int!
+  # meta: MetadataEntity
 }
 
 type UniqueClass @entity {
@@ -111,9 +111,11 @@ type UniqueClass @entity {
   creator: String
   freezer: String
   totalDeposit: BigInt
-  name: String 
+  name: String
   status: AssetStatus!
   instances: [UniqueInstance!] @derivedFrom(field: "uniqueClass")
+  metadata: String
+  attributes: [Attribute!]
 }
 
 type UniqueInstance @entity {
@@ -124,5 +126,12 @@ type UniqueInstance @entity {
   status: AssetStatus!
   deposit: BigInt
   transfers: [UniqueTransfer!] @derivedFrom(field: "uniqueInstance")
+  metadata: String
+  attributes: [Attribute!]
+}
+
+type Attribute @jsonField {
+  key: String
+  value: String!
 }
 
