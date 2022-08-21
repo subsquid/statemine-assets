@@ -1,49 +1,32 @@
 {
-  "name": "statemine-indexer",
+  "name": "kusama-transfers",
   "private": true,
+  "engines" : { 
+    "node" : ">=16"
+  },
   "scripts": {
-    "typegen": "hydra-typegen typegen manifest.yml",
-    "codegen": "hydra-cli codegen",
     "build": "rm -rf lib && tsc",
-    "db:create": "hydra-cli db:create",
-    "db:drop": "hydra-cli db:drop",
-    "db:create-migration": "hydra-cli db:create-migration",
-    "db:migrate": "hydra-cli db:migrate",
-    "db:revert": "hydra-cli db:revert",
-    "db:reset": "hydra-cli db:drop && hydra-cli db:create && hydra-processor migrate && hydra-cli db:migrate",
-    "processor:migrate": "hydra-processor migrate",
-    "processor:start": "hydra-processor run",
-    "processor:start-debug": "DEBUG=hydra-processor:mappings-executor hydra-processor run",
-    "query-node:start": "node ./lib/generated/server.js",
-    "eslint": "eslint src/",
-    "prettier": "prettier --write .",
-    "prepare": "husky install"
+    "db:migrate": "npx squid-typeorm-migration apply",
+    "processor:start": "node lib/processor.js",
+    "query-node:start": "squid-graphql-server"
   },
   "dependencies": {
-    "@polkadot/types": "^6.5.1",
-    "@subsquid/hydra-common": "5.0.0-alpha.9",
-    "@subsquid/hydra-processor": "5.0.0-alpha.9",
-    "@subsquid/openreader": "^0.2.0",
-    "class-validator": "^0.13.1",
-    "inflected": "^2.1.0",
-    "type-graphql": "^1.1.1",
-    "typeorm": "0.2.38"
+    "@subsquid/archive-registry": "1.0.9",
+    "@subsquid/cli": "^0.5.1",
+    "@subsquid/graphql-server": "^1.1.0",
+    "@subsquid/ss58": "^0.1.1",
+    "@subsquid/substrate-processor": "1.5.1",
+    "@subsquid/typeorm-migration": "0.1.1",
+    "@subsquid/typeorm-store": "0.1.1",
+    "dotenv": "^10.0.0",
+    "pg": "^8.7.3",
+    "typeorm": "0.3.7"
   },
   "devDependencies": {
-    "@subsquid/hydra-cli": "5.0.0-alpha.9",
-    "@subsquid/hydra-typegen": "5.0.0-alpha.9",
-    "@types/inflected": "^1.1.29",
-    "@types/pg": "^8.6.1",
-    "@typescript-eslint/eslint-plugin": "^5.3.1",
-    "@typescript-eslint/parser": "^5.3.1",
-    "eslint": "^8.2.0",
-    "husky": "^7.0.4",
-    "lint-staged": "^11.2.6",
-    "prettier": "^2.4.1",
-    "typescript": "~4.4.2"
-  },
-  "lint-staged": {
-    "*.ts": "eslint --cache --fix",
-    "*.{ts,md}": "prettier --write"
+    "@subsquid/typeorm-codegen": "0.1.0",
+    "@subsquid/substrate-metadata-explorer": "1.0.5",
+    "@subsquid/substrate-typegen": "1.2.1",
+    "@types/node": "16.11.47",
+    "typescript": "4.7.4"
   }
 }

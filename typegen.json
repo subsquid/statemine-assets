@@ -1,0 +1,52 @@
+{
+	"outDir": "src/types",
+	"specVersions": "https://statemine.archive.subsquid.io/graphql", 
+	"typesBundle": "statemine", 
+	"events": [ 
+		"Balances.Transfer",
+		"Balances.Deposit",
+		"Assets.Created",
+		"Assets.MetadataSet",
+		"Assets.MetadataCleared",
+		"Assets.Issued",
+		"Assets.Transferred",
+		"Assets.TransferredApproved",
+		"Assets.Frozen",
+		"Assets.Thawed",
+		"Assets.Burned",
+		"Assets.TeamChanged",
+		"Assets.OwnerChanged",
+		"Assets.AssetFrozen",
+		"Assets.AssetThawed",
+		"Assets.Destroyed",
+		"Uniques.Created",
+		"Uniques.Issued",
+		"Uniques.Destroyed",
+		"Uniques.Transferred",
+		"Uniques.Burned",
+		"Uniques.TeamChanged",
+		"Uniques.OwnerChanged",
+		"Uniques.Frozen",
+		"Uniques.Thawed",
+		"Uniques.ClassFrozen",
+		"Uniques.ClassThawed",
+		"Uniques.MetadataSet",
+		"Uniques.MetadataCleared",
+		"Uniques.ClassMetadataSet",
+		"Uniques.ClassMetadataCleared",
+		"Uniques.CollectionMetadataSet",
+		"Uniques.CollectionMetadataCleared",
+		"Uniques.AttributeSet",
+		"Uniques.AttributeCleared"
+	],
+	"calls": [ 
+		"Timestamp.set",
+		"Assets.create"
+	],
+	"storage": [
+		"Uniques.Class",
+		"Uniques.InstanceMetadataOf",
+		"Uniques.Account"
+	]
+  }
+
